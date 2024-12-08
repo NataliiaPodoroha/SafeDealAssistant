@@ -207,8 +207,6 @@ ___
 
 ## Fields of Improvement
 
-### What's Next:
-
 #### Finalizing Deals:
 - Implement functionality for finalizing a deal when the administrator confirms the process is complete.
 - Send a final notification to both parties about the successful completion of the deal.
@@ -218,3 +216,11 @@ ___
 
 #### Optimizing Notifications:
 - Improve the formatting of notifications to make them more structured and professional.
+
+#### Admin Action Logging
+- Record all actions performed by the administrator (e.g., changing deal status, creating a product) in the database.
+- Add an AdminLogs table to the database.
+
+#### Input Data Validation
+- Validate the format of user-inputted data during deal creation.
+- Ensure amounts, currencies, and usernames are in the correct form
