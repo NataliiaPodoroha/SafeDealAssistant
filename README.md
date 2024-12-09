@@ -13,7 +13,6 @@ ___
 - [Setup Instructions](#setup-instructions)
 - [Usage](#usage)
 - [Fields of Improvement](#fields-of-improvement)
-- [Contribution Guidelines](#contribution-guidelines)
 
 ## Features
 
