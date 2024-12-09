@@ -9,7 +9,7 @@ from database.models import User
 router = Router()
 
 
-async def register_user(user_id: int, username: str):
+async def register_user(user_id: int, username: str) -> None:
     async with async_session() as session:
         existing_user = await session.execute(
             select(User).where(User.telegram_id == user_id)
@@ -26,7 +26,7 @@ async def register_user(user_id: int, username: str):
 
 
 @router.message(Command("start"))
-async def start_handler(message: types.Message):
+async def start_handler(message: types.Message) -> None:
     user_id = message.from_user.id
     username = message.from_user.username
 

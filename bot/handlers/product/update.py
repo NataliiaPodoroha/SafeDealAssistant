@@ -4,9 +4,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from sqlalchemy.future import select
 
-from bot.keyboards.product import product_list_keyboard_for_updating
-from database.models import Product
 from database.db_setup import async_session
+from database.models import Product
+from bot.keyboards.product import product_list_keyboard_for_updating
 
 
 router = Router()
@@ -17,7 +17,7 @@ class UpdateProductState(StatesGroup):
 
 
 @router.callback_query(lambda c: c.data == "update_product")
-async def list_products_for_update(callback: CallbackQuery):
+async def list_products_for_update(callback: CallbackQuery) -> None:
     async with async_session() as session:
         result = await session.execute(select(Product))
         products = result.scalars().all()
@@ -27,12 +27,13 @@ async def list_products_for_update(callback: CallbackQuery):
         return
 
     await callback.message.edit_text(
-        "Select a product to update:", reply_markup=product_list_keyboard_for_updating(products)
+        "Select a product to update:",
+        reply_markup=product_list_keyboard_for_updating(products),
     )
 
 
 @router.callback_query(lambda c: c.data.startswith("update_"))
-async def prompt_update_product(callback: CallbackQuery, state: FSMContext):
+async def prompt_update_product(callback: CallbackQuery, state: FSMContext) -> None:
     product_id = int(callback.data.split("_")[1])
     async with async_session() as session:
         product = await session.get(Product, product_id)
@@ -52,7 +53,7 @@ async def prompt_update_product(callback: CallbackQuery, state: FSMContext):
 
 
 @router.message(UpdateProductState.waiting_for_product_data)
-async def update_product_in_db(message: Message, state: FSMContext):
+async def update_product_in_db(message: Message, state: FSMContext) -> None:
     user_input = message.text
 
     try:
@@ -60,7 +61,8 @@ async def update_product_in_db(message: Message, state: FSMContext):
         price = float(price)
     except ValueError:
         await message.reply(
-            "Invalid format. Please use the format:\n`name|description|price|currency|seller`"
+            "Invalid format. Please use the format:\n"
+            "`name|description|price|currency|seller`"
         )
         return
 

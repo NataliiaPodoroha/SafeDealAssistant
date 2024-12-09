@@ -1,4 +1,5 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 from database.models import Deal, DealStatus
 
 
@@ -35,7 +36,7 @@ def deal_details_keyboard(deal_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-def deal_type_keyboard():
+def deal_type_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="Buy", callback_data="buy")],
@@ -44,7 +45,7 @@ def deal_type_keyboard():
     )
 
 
-def confirm_deal_keyboard(deal_id: int):
+def confirm_deal_keyboard(deal_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -59,7 +60,7 @@ def confirm_deal_keyboard(deal_id: int):
     )
 
 
-def change_status_keyboard(deal_id: int):
+def change_status_keyboard(deal_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [

@@ -1,8 +1,9 @@
 import asyncio
+
 from bot.main import create_bot
 
 
-async def main():
+async def main() -> None:
     bot, dp = await create_bot()
     await dp.start_polling(bot)
 

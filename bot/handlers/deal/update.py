@@ -1,15 +1,15 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
 
-from bot.keyboards.deal import change_status_keyboard
-from database.models import Deal
 from database.db_setup import async_session
+from database.models import Deal
+from bot.keyboards.deal import change_status_keyboard
 
 router = Router()
 
 
 @router.callback_query(lambda c: c.data.startswith("change_status_"))
-async def change_status(callback: CallbackQuery):
+async def change_status(callback: CallbackQuery) -> None:
     deal_id = int(callback.data.split("_")[2])
 
     keyboard = change_status_keyboard(deal_id)
@@ -19,7 +19,7 @@ async def change_status(callback: CallbackQuery):
 
 
 @router.callback_query(lambda c: c.data.startswith("set_status_"))
-async def set_status(callback: CallbackQuery):
+async def set_status(callback: CallbackQuery) -> None:
     _, _, deal_id, status = callback.data.split("_")
     deal_id = int(deal_id)
 

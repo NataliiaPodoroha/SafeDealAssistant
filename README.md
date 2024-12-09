@@ -6,9 +6,16 @@ SafeDealAssistant is a Telegram bot designed to facilitate secure deals between 
 
 ___
 
-## Features
+## Table of Contents
+- [Features](#features)
+- [How the Service Works](#how-the-service-works)
+- [Roles](#roles)
+- [Setup Instructions](#setup-instructions)
+- [Usage](#usage)
+- [Fields of Improvement](#fields-of-improvement)
+- [Contribution Guidelines](#contribution-guidelines)
 
-### 1. Core Features
+## Features
 
 **Users:**
 
@@ -87,9 +94,9 @@ ___
 The administrator receives a notification about the confirmed deal:
 
 - Product name.
+- Price.
 - Buyer.
 - Seller.
-- Payment link.
 
 The administrator oversees payment and goods transfer:
 
@@ -182,11 +189,12 @@ git clone https://github.com/username/SafeDealAssistant.git
 
 Create a .env file with the following parameters:
 ```mathematica
-BOT_TOKEN=your_telegram_bot_token
-ADMIN_ID=your_telegram_id
-SIMPLESWAP_API_KEY=your_api_key
-ADMIN_WALLET=your_wallet_address
-CURRENCY_TO=currency_to_convert_to (e.g., BTC)
+BOT_TOKEN=YOUR_BOT_TOKEN
+ADMIN_ID=YOUR_ADMIN_ID
+DATABASE_URL=YOUR_DATABASE_URL
+SIMPLE_SWAP_API_KEY=YOUR_SIMPLE_SWAP_API_KEY
+ADMIN_WALLET_ADDRESS=A_VALID_WALLET_ADDRESS
+ADMIN_WALLET_CURRENCY=A_VALID_WALLET_CURRENCY
 ```
 
 Install dependencies:

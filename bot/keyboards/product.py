@@ -1,4 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 from database.models import Product
 
 
@@ -22,7 +23,7 @@ def product_details_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-def product_list_keyboard_for_updating(products):
+def product_list_keyboard_for_updating(products: list[Product]) -> InlineKeyboardMarkup:
     keyboard = [
         [
             InlineKeyboardButton(

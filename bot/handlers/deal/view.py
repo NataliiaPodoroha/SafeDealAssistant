@@ -2,16 +2,16 @@ from aiogram import Router
 from aiogram.types import CallbackQuery
 from sqlalchemy.future import select
 
-from bot.keyboards.deal import deal_list_keyboard, deal_details_keyboard
-from database.models import Deal
 from database.db_setup import async_session
+from database.models import Deal
+from bot.keyboards.deal import deal_list_keyboard, deal_details_keyboard
 
 
 router = Router()
 
 
 @router.callback_query(lambda c: c.data == "view_deals")
-async def view_deals(callback: CallbackQuery):
+async def view_deals(callback: CallbackQuery) -> None:
 
     async with async_session() as session:
         result = await session.execute(select(Deal))
@@ -26,7 +26,7 @@ async def view_deals(callback: CallbackQuery):
 
 
 @router.callback_query(lambda c: c.data.startswith("deal_"))
-async def view_deal_details(callback: CallbackQuery):
+async def view_deal_details(callback: CallbackQuery) -> None:
     deal_id = int(callback.data.split("_")[1])
 
     async with async_session() as session:
@@ -50,5 +50,5 @@ async def view_deal_details(callback: CallbackQuery):
 
 
 @router.callback_query(lambda callback: callback.data == "back_to_deals")
-async def back_to_deals(callback: CallbackQuery):
+async def back_to_deals(callback: CallbackQuery) -> None:
     await view_deals(callback)

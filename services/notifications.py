@@ -6,7 +6,7 @@ from database.models import Deal
 from services.user_management import get_user_id_by_username
 
 
-async def notify_second_party(message: Message, deal: Deal):
+async def notify_second_party(message: Message, deal: Deal) -> None:
     recipient_nick = (
         deal.seller if deal.buyer == message.from_user.username else deal.buyer
     )
@@ -29,7 +29,7 @@ async def notify_second_party(message: Message, deal: Deal):
     )
 
 
-async def notify_parties_about_status_change(bot, deal: Deal, message: str):
+async def notify_parties_about_status_change(bot, deal: Deal, message: str) -> None:
     buyer_id = await get_user_id_by_username(deal.buyer)
     seller_id = await get_user_id_by_username(deal.seller)
 
@@ -52,7 +52,7 @@ def format_deal_details(deal: Deal) -> str:
     )
 
 
-async def notify_admin_about_confirmation(bot, deal: Deal):
+async def notify_admin_about_confirmation(bot, deal: Deal) -> None:
     text = (
         f"🚨 New deal confirmed!\n\n"
         f"💵 Product: {deal.product_name}\n"

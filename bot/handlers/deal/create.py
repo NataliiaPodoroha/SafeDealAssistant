@@ -3,15 +3,16 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+
 from bot.keyboards.deal import deal_type_keyboard
+from database.db_setup import async_session
+from database.models import Deal, DealStatus
 from services.notifications import (
     notify_second_party,
     notify_parties_about_status_change,
     notify_admin_about_confirmation,
 )
 from services.simpleswap import create_exchange
-from database.db_setup import async_session
-from database.models import Deal, DealStatus
 from services.user_management import get_user_id_by_username
 
 router = Router()
@@ -23,32 +24,35 @@ class DealForm(StatesGroup):
 
 
 @router.message(Command("create_deal"))
-async def start_create_deal(message: Message, state: FSMContext):
+async def start_create_deal(message: Message, state: FSMContext) -> None:
     await message.answer(
-        "Do you want to buy or sell a product?", reply_markup=deal_type_keyboard()
+        "Do you want to buy or sell a product?",
+        reply_markup=deal_type_keyboard(),
     )
     await state.set_state(DealForm.choose_type)
 
 
 @router.callback_query(lambda c: c.data in ["buy", "sell"])
-async def set_deal_type(callback: CallbackQuery, state: FSMContext):
+async def set_deal_type(callback: CallbackQuery, state: FSMContext) -> None:
     deal_type = "buyer" if callback.data == "buy" else "seller"
     await state.update_data(deal_type=deal_type)
     await callback.message.edit_text(
-        "Enter details in the format:\n`Product Name|Amount|Currency|Other Party Username`"
+        "Enter details in the format:\n"
+        "`Product Name|Amount|Currency|Other Party Username`"
     )
     await state.set_state(DealForm.get_details)
 
 
 @router.message(DealForm.get_details)
-async def save_deal(message: Message, state: FSMContext):
+async def save_deal(message: Message, state: FSMContext) -> None:
     user_data = await state.get_data()
     deal_type = user_data["deal_type"]
     details = message.text.split("|")
 
     if len(details) != 4:
         await message.reply(
-            "Invalid format. Please use:\n`Product Name|Amount|Currency|Other Party Username`"
+            "Invalid format. Please use:\n"
+            "`Product Name|Amount|Currency|Other Party Username`"
         )
         return
 
@@ -85,7 +89,7 @@ async def save_deal(message: Message, state: FSMContext):
 
 
 @router.callback_query(lambda callback: callback.data.startswith("deal_accept_"))
-async def accept_deal(callback: CallbackQuery):
+async def accept_deal(callback: CallbackQuery) -> None:
     deal_id = int(callback.data.split("_")[2])
 
     async with async_session() as session:
@@ -126,7 +130,7 @@ async def accept_deal(callback: CallbackQuery):
 
 
 @router.callback_query(lambda c: c.data.startswith("deal_decline_"))
-async def decline_deal(callback: CallbackQuery):
+async def decline_deal(callback: CallbackQuery) -> None:
     deal_id = int(callback.data.split("_")[2])
 
     async with async_session() as session:

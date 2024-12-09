@@ -9,7 +9,7 @@ engine = create_async_engine(config.DATABASE_URL)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-async def init_db():
-    """ For local development purposes only """
+async def init_db() -> None:
+    """For local development purposes only"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

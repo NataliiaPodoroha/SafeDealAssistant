@@ -2,8 +2,9 @@ from aiogram import Router, types
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from database.models import Product
+
 from database.db_setup import async_session
+from database.models import Product
 
 router = Router()
 
@@ -17,27 +18,29 @@ class CreateProductFSM(StatesGroup):
 
 
 @router.callback_query(lambda call: call.data == "create_product")
-async def start_create_product(call: CallbackQuery, state: FSMContext):
+async def start_create_product(call: CallbackQuery, state: FSMContext) -> None:
     await call.message.answer("Enter product name:")
     await state.set_state(CreateProductFSM.waiting_for_name)
 
 
 @router.message(CreateProductFSM.waiting_for_name)
-async def product_name_handler(message: types.Message, state: FSMContext):
+async def product_name_handler(message: types.Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
     await message.answer("Enter product description:")
     await state.set_state(CreateProductFSM.waiting_for_description)
 
 
 @router.message(CreateProductFSM.waiting_for_description)
-async def product_description_handler(message: types.Message, state: FSMContext):
+async def product_description_handler(
+    message: types.Message, state: FSMContext
+) -> None:
     await state.update_data(description=message.text)
     await message.answer("Enter product price:")
     await state.set_state(CreateProductFSM.waiting_for_price)
 
 
 @router.message(CreateProductFSM.waiting_for_price)
-async def product_price_handler(message: types.Message, state: FSMContext):
+async def product_price_handler(message: types.Message, state: FSMContext) -> None:
     try:
         price = float(message.text)
         await state.update_data(price=price)
@@ -48,14 +51,14 @@ async def product_price_handler(message: types.Message, state: FSMContext):
 
 
 @router.message(CreateProductFSM.waiting_for_currency)
-async def product_currency_handler(message: types.Message, state: FSMContext):
+async def product_currency_handler(message: types.Message, state: FSMContext) -> None:
     await state.update_data(currency=message.text.upper())
     await message.answer("Enter seller's name:")
     await state.set_state(CreateProductFSM.waiting_for_seller)
 
 
 @router.message(CreateProductFSM.waiting_for_seller)
-async def product_seller_handler(message: types.Message, state: FSMContext):
+async def product_seller_handler(message: types.Message, state: FSMContext) -> None:
     data = await state.get_data()
     data["seller"] = message.text
 

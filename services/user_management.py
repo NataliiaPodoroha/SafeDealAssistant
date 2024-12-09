@@ -1,6 +1,7 @@
 from sqlalchemy.future import select
-from database.models import User
+
 from database.db_setup import async_session
+from database.models import User
 
 
 async def register_user(
@@ -8,7 +9,7 @@ async def register_user(
     username: str = None,
     first_name: str = None,
     last_name: str = None,
-):
+) -> None:
     async with async_session() as session:
         existing_user = await session.get(User, telegram_id)
         if not existing_user:
@@ -22,7 +23,7 @@ async def register_user(
             await session.commit()
 
 
-async def get_user_id_by_username(username: str):
+async def get_user_id_by_username(username: str) -> int:
     async with async_session() as session:
         result = await session.execute(
             select(User.telegram_id).where(User.username == username)
