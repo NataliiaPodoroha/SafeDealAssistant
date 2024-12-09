@@ -1,7 +1,7 @@
 import aiohttp
 import certifi
 import ssl
-from config import API_KEY, ADMIN_WALLET, CURRENCY_TO
+from config import SIMPLE_SWAP_API_KEY, ADMIN_WALLET, CURRENCY_TO
 
 BASE_URL = "https://api.simpleswap.io/v1"
 
@@ -16,7 +16,7 @@ async def create_exchange(currency_from: str, amount: float) -> str:
         "address_to": ADMIN_WALLET,
     }
     params = {
-        "api_key": API_KEY,
+        "api_key": SIMPLE_SWAP_API_KEY,
     }
 
     ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -28,7 +28,6 @@ async def create_exchange(currency_from: str, amount: float) -> str:
             if response.status != 200:
                 raise Exception(f"SimpleSwap API error: {response.status}, {response.json()}")
             data = await response.json()
-            print(data)
 
             payment_link = data.get("redirect_url")
             if not payment_link:

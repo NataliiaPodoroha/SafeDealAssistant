@@ -4,9 +4,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from sqlalchemy.future import select
 
+from bot.keyboards.product import product_list_keyboard_for_updating
 from database.models import Product
 from database.db_setup import async_session
-from bot.keyboards.update import product_list_keyboard
+
 
 router = Router()
 
@@ -26,7 +27,7 @@ async def list_products_for_update(callback: CallbackQuery):
         return
 
     await callback.message.edit_text(
-        "Select a product to update:", reply_markup=product_list_keyboard(products)
+        "Select a product to update:", reply_markup=product_list_keyboard_for_updating(products)
     )
 
 

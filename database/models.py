@@ -1,7 +1,6 @@
 from datetime import datetime
-from enum import Enum as PyEnum
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, Text, DateTime, Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, String, Float, Text, DateTime
 
 
 Base = declarative_base()

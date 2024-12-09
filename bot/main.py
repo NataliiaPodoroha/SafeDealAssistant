@@ -1,35 +1,39 @@
 import logging
+
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from bot.handlers import (
-    start,
-    catalog,
-    admin,
-    create_product,
-    update_product,
-    delete_product, deal, view_deals,
+
+import config
+from bot.handlers import start, admin
+from bot.handlers.deal import view as deal_view, create as deal_create
+from bot.handlers.product import (
+    delete as product_delete,
+    create as product_create,
+    update as product_update,
+    view as product_view,
 )
 from aiogram.types import BotCommand
-from database.db_setup import init_db
-from config import BOT_TOKEN
+
 
 logging.basicConfig(level=logging.INFO)
 
 
 async def create_bot():
-    await init_db()
-
-    bot = Bot(token=BOT_TOKEN)
+    bot = Bot(token=config.BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(start.router)
-    dp.include_router(catalog.router)
     dp.include_router(admin.router)
-    dp.include_router(deal.router)
-    dp.include_router(view_deals.router)
-    dp.include_router(create_product.router)
-    dp.include_router(update_product.router)
-    dp.include_router(delete_product.router)
+
+    # Include deal handlers
+    dp.include_router(deal_create.router)
+    dp.include_router(deal_view.router)
+
+    # Include product handlers
+    dp.include_router(product_view.router)
+    dp.include_router(product_create.router)
+    dp.include_router(product_update.router)
+    dp.include_router(product_delete.router)
 
     await bot.set_my_commands(
         [

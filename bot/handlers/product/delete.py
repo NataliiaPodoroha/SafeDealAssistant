@@ -1,9 +1,10 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
 from sqlalchemy.future import select
+
+from bot.keyboards.product import product_list_keyboard_for_deletion
 from database.models import Product
 from database.db_setup import async_session
-from bot.keyboards.delete import product_list_keyboard_for_deletion
 
 router = Router()
 

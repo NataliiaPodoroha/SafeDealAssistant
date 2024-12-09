@@ -1,14 +1,18 @@
-from aiogram import Router, Bot
+from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from bot.keyboards.deals import deal_type_keyboard, confirm_deal_keyboard
-from config import ADMIN_ID
+from bot.keyboards.deal import deal_type_keyboard
+from services.notifications import (
+    notify_second_party,
+    notify_parties_about_status_change,
+    notify_admin_about_confirmation,
+)
 from services.simpleswap import create_exchange
 from database.db_setup import async_session
 from database.models import Deal, DealStatus
-from database.user_management import get_user_id_by_username
+from services.user_management import get_user_id_by_username
 
 router = Router()
 
@@ -80,29 +84,6 @@ async def save_deal(message: Message, state: FSMContext):
     )
 
 
-async def notify_second_party(message: Message, deal: Deal):
-    recipient_nick = (
-        deal.seller if deal.buyer == message.from_user.username else deal.buyer
-    )
-    recipient_user_id = await get_user_id_by_username(recipient_nick)
-
-    if not recipient_user_id:
-        await message.answer(f"Error: Could not find user @{recipient_nick}.")
-        return
-
-    text = (
-        f"New deal request!\n\n"
-        f"Product: {deal.product_name}\n"
-        f"Amount: {deal.amount} {deal.currency}\n"
-        f"Buyer: @{deal.buyer}\n"
-        f"Seller: @{deal.seller}\n\n"
-        "Do you accept this deal?"
-    )
-    await message.bot.send_message(
-        recipient_user_id, text, reply_markup=confirm_deal_keyboard(deal.id)
-    )
-
-
 @router.callback_query(lambda callback: callback.data.startswith("deal_accept_"))
 async def accept_deal(callback: CallbackQuery):
     deal_id = int(callback.data.split("_")[2])
@@ -122,8 +103,7 @@ async def accept_deal(callback: CallbackQuery):
                 currency_from=deal.currency, amount=deal.amount
             )
             deal.payment_link = payment_link
-        except Exception as e:
-            print(e)
+        except Exception:
             await callback.message.edit_text("Error generating payment link.")
             return
 
@@ -170,37 +150,3 @@ async def decline_deal(callback: CallbackQuery):
     )
 
     await callback.message.edit_text("You have declined the deal.")
-
-
-async def notify_parties_about_status_change(bot, deal: Deal, message: str):
-    buyer_id = await get_user_id_by_username(deal.buyer)
-    seller_id = await get_user_id_by_username(deal.seller)
-
-    notification_text = f"Deal Update: {message}\n\n{format_deal_details(deal)}"
-
-    if buyer_id:
-        await bot.send_message(buyer_id, notification_text)
-
-    if seller_id:
-        await bot.send_message(seller_id, notification_text)
-
-
-def format_deal_details(deal: Deal) -> str:
-    return (
-        f"Product: {deal.product_name}\n"
-        f"Amount: {deal.amount} {deal.currency}\n"
-        f"Buyer: @{deal.buyer}\n"
-        f"Seller: @{deal.seller}\n"
-        f"Status: {deal.status}"
-    )
-
-
-async def notify_admin_about_confirmation(bot, deal: Deal):
-    text = (
-        f"🚨 New deal confirmed!\n\n"
-        f"💵 Product: {deal.product_name}\n"
-        f"💰 Amount: {deal.amount} {deal.currency}\n"
-        f"👤 Buyer: @{deal.buyer}\n"
-        f"👤 Seller: @{deal.seller}\n"
-    )
-    await bot.send_message(ADMIN_ID, text)
