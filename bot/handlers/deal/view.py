@@ -25,9 +25,9 @@ async def view_deals(callback: CallbackQuery) -> None:
     await callback.message.edit_text("List of Deals:", reply_markup=keyboard)
 
 
-@router.callback_query(lambda c: c.data.startswith("deal_"))
+@router.callback_query(lambda c: c.data.startswith("view_deal_"))
 async def view_deal_details(callback: CallbackQuery) -> None:
-    deal_id = int(callback.data.split("_")[1])
+    deal_id = int(callback.data.split("_")[2])
 
     async with async_session() as session:
         deal = await session.get(Deal, deal_id)

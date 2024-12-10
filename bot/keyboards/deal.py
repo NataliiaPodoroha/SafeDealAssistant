@@ -8,7 +8,7 @@ def deal_list_keyboard(deals: list[Deal]) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text=f"{deal.product_name} (Status: {deal.status})",
-                callback_data=f"deal_{deal.id}",
+                callback_data=f"view_deal_{deal.id}",
             )
         ]
         for deal in deals
@@ -88,7 +88,7 @@ def change_status_keyboard(deal_id: int) -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="Back to Deal", callback_data=f"deal_{deal_id}"
+                    text="Back to Deal", callback_data=f"view_deal_{deal_id}"
                 )
             ],
         ]
