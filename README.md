@@ -186,14 +186,14 @@ Clone the repository:
 git clone https://github.com/username/SafeDealAssistant.git
 ```
 
-Create a .env file with the following parameters:
-```mathematica
-BOT_TOKEN=YOUR_BOT_TOKEN
-ADMIN_ID=YOUR_ADMIN_ID
-DATABASE_URL=YOUR_DATABASE_URL
-SIMPLE_SWAP_API_KEY=YOUR_SIMPLE_SWAP_API_KEY
-ADMIN_WALLET_ADDRESS=A_VALID_WALLET_ADDRESS
-ADMIN_WALLET_CURRENCY=A_VALID_WALLET_CURRENCY
+Create a virtual environment:
+```bash
+python3 -m venv venv
+```
+
+Activate the virtual environment:
+```bash
+source venv/bin/activate
 ```
 
 Install dependencies:
@@ -204,6 +204,16 @@ pip install -r requirements.txt
 Initialize the database:
 ```bash
 alembic upgrade head
+```
+
+Create a .env file with the following parameters:
+```mathematica
+BOT_TOKEN=YOUR_BOT_TOKEN
+ADMIN_ID=YOUR_ADMIN_ID
+DATABASE_URL=YOUR_DATABASE_URL
+SIMPLE_SWAP_API_KEY=YOUR_SIMPLE_SWAP_API_KEY
+ADMIN_WALLET_ADDRESS=A_VALID_WALLET_ADDRESS
+ADMIN_WALLET_CURRENCY=A_VALID_WALLET_CURRENCY
 ```
 
 Run the bot:
